@@ -10,27 +10,50 @@ import UIKit
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
-
+    var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        
+        window = UIWindow(frame: UIScreen.main.bounds)
+        if #available(iOS 13.0, *) {
+            window?.overrideUserInterfaceStyle = .light
+        } else {
+            // Fallback on earlier versions
+        }
+        window?.rootViewController = ViewController()
+        window?.makeKeyAndVisible()
+        
         return true
     }
-
-    // MARK: UISceneSession Lifecycle
-
-    func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
-        // Called when a new scene session is being created.
-        // Use this method to select a configuration to create the new scene with.
-        return UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
+    
+    func scrollViewContentInsetConfig()  {
+        /**
+         全局修正scrollview的contentInset偏差
+         不采用自有AdjustmentBehavior，页面内具体情况由显示页面调整
+         */
+        if #available(iOS 11.0, *) {
+            UIScrollView.appearance().contentInsetAdjustmentBehavior = .never
+        } else {
+            UIViewController().automaticallyAdjustsScrollViewInsets = false
+        }
+        
+        /**
+         适配iOS15.0 tableview sectionHeader新增偏移量
+         */
+        if #available(iOS 15.0, *) {
+            UITableView.appearance().sectionHeaderTopPadding = 0
+        }
+        
     }
-
-    func application(_ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>) {
-        // Called when the user discards a scene session.
-        // If any sessions were discarded while the application was not running, this will be called shortly after application:didFinishLaunchingWithOptions.
-        // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
+    /**
+      修改默认present页面为全屏样式
+     */
+    func modelPresentStyleChanged() {
+        if #available(iOS 13.0, *) {
+//            UIViewController.swizzlePresent()
+        }
     }
-
 
 }
 
